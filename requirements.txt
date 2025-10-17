@@ -1,0 +1,5 @@
+streamlit>=1.50
+bcrypt
+pillow
+openai>=1.45.0
+requests
