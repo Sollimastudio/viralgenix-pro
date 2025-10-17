@@ -1,0 +1,6 @@
+*.db
+images/
+logos/
+__pycache__/
+.streamlit/
+venv/
