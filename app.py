@@ -65,7 +65,7 @@ def dalle_image_url(prompt: str, size="1024x1024") -> str:
 def create_canvas(size: str) -> Image.Image:
     sizes = {"IG_Q": (1080,1080), "VERT": (1080,1920), "FB": (1200,630), "YT": (1280,720)}
     w, h = sizes.get(size, (1080,1080))
-    return Image.new("RGB", (w, h), (13, 26, 74))
+    return Image.new("RGB", (w, h), (27, 58, 45))
 
 def draw_text_on_image(base_img: Image.Image, title: str, subtitle: str = "") -> Image.Image:
     img = base_img.convert("RGBA").copy()
@@ -531,7 +531,9 @@ def main():
                     if st.button("Gerar Card Local 🖼️"):
                         p = generate_card(style, title_img or "Titulo", subtitle_img, size_code, user_img=user_img)
                         st.image(str(p), caption=p.name, use_column_width=True)
-                        st.success("Imagem pronta (pasta images/).")
+                        with open(p, "rb") as f:
+                            st.download_button("⬇️ Baixar imagem", f, file_name=p.name, mime="image/png")
+                        st.success("Imagem pronta — clique em Baixar para salvar no seu dispositivo.")
                 with gcol2:
                     if st.button("Imagem IA (DALL·E)"):
                         prompt_img = st.text_input("Prompt de imagem (detalhado)", value=idea or "conceito criativo minimalista, realista")
@@ -548,9 +550,11 @@ def main():
                             for i, slide in enumerate(st.session_state.last_slides, start=1):
                                 p = generate_card("Meme", slide, "", "IG_Q", user_img=user_img)
                                 paths.append(p)
-                            st.success("Gerei {} slides do carrossel (pasta images/).".format(len(paths)))
+                            st.success("Gerei {} slides do carrossel — baixe cada um abaixo.".format(len(paths)))
                             for p in paths:
                                 st.image(str(p), caption=p.name, use_column_width=True)
+                                with open(p, "rb") as f:
+                                    st.download_button("⬇️ Baixar {}".format(p.name), f, file_name=p.name, mime="image/png")
 
             if fmt == "Artigo SEO (Monetizavel)":
                 st.markdown("### Gerar Artigo SEO (Monetizavel)")
