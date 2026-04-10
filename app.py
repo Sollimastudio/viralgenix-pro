@@ -67,21 +67,60 @@ def create_canvas(size: str) -> Image.Image:
     w, h = sizes.get(size, (1080,1080))
     return Image.new("RGB", (w, h), (27, 58, 45))
 
+def get_font(size: int):
+    try:
+        font_paths = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+            "/System/Library/Fonts/Helvetica.ttc",
+            "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+        ]
+        for fp in font_paths:
+            if Path(fp).exists():
+                return ImageFont.truetype(fp, size)
+    except Exception:
+        pass
+    return ImageFont.load_default()
+
+def wrap_text(text: str, font, max_width: int, draw) -> list:
+    words = text.split()
+    lines, current = [], ""
+    for word in words:
+        test = (current + " " + word).strip()
+        bbox = draw.textbbox((0, 0), test, font=font)
+        if bbox[2] <= max_width:
+            current = test
+        else:
+            if current:
+                lines.append(current)
+            current = word
+    if current:
+        lines.append(current)
+    return lines
+
 def draw_text_on_image(base_img: Image.Image, title: str, subtitle: str = "") -> Image.Image:
     img = base_img.convert("RGBA").copy()
-    draw = ImageDraw.Draw(img)
     W, H = img.size
     overlay = Image.new("RGBA", (W, H), (0,0,0,0))
     ov = ImageDraw.Draw(overlay)
-    ov.rectangle([(0,0),(W,int(H*0.25))], fill=(0,0,0,140))
-    ov.rectangle([(0,int(H*0.75)),(W,H)], fill=(0,0,0,140))
-    ov.rectangle([(1,1),(W-2,H-2)], outline=(30,80,200,180), width=2)
+    ov.rectangle([(0,0),(W,H)], fill=(0,0,0,100))
+    ov.rectangle([(0,int(H*0.6)),(W,H)], fill=(0,0,0,160))
+    ov.rectangle([(2,2),(W-3,H-3)], outline=(201,168,76,200), width=4)
     img = Image.alpha_composite(img, overlay)
-    margin = 30
     draw = ImageDraw.Draw(img)
-    draw.text((margin, margin), title[:120], fill=(255,255,255,255))
+    margin = 50
+    max_w = W - margin * 2
+    title_font = get_font(max(48, H // 14))
+    sub_font = get_font(max(32, H // 22))
+    lines = wrap_text(title, title_font, max_w, draw)
+    line_h = title_font.size + 12
+    total_h = line_h * len(lines)
+    y = int(H * 0.62)
+    for line in lines:
+        draw.text((margin, y), line, font=title_font, fill=(255,255,255,255))
+        y += line_h
     if subtitle:
-        draw.text((margin, H - 60), subtitle[:160], fill=(255,255,255,255))
+        draw.text((margin, y + 10), subtitle[:100], font=sub_font, fill=(201,168,76,230))
     return img.convert("RGB")
 
 def generate_image_dalle(prompt: str, size: str = "1024x1024") -> Path:
