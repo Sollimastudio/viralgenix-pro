@@ -25,14 +25,23 @@ FOREST = "#1B3A2D"
 
 OPENAI_KEY = os.environ.get("VIRAL_API_KEY", "").strip()
 USE_LLM = bool(OPENAI_KEY)
+IS_OPENROUTER = OPENAI_KEY.startswith("sk-or-")
 
 def call_llm(sys_prompt: str, user_prompt: str) -> str:
     if not USE_LLM:
         raise RuntimeError("No API key found")
     from openai import OpenAI
-    client = OpenAI(api_key=OPENAI_KEY)
+    if IS_OPENROUTER:
+        client = OpenAI(
+            api_key=OPENAI_KEY,
+            base_url="https://openrouter.ai/api/v1",
+        )
+        model = "openai/gpt-4o-mini"
+    else:
+        client = OpenAI(api_key=OPENAI_KEY)
+        model = "gpt-4o-mini"
     resp = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model,
         messages=[
             {"role": "system", "content": sys_prompt},
             {"role": "user", "content": user_prompt},
@@ -43,7 +52,7 @@ def call_llm(sys_prompt: str, user_prompt: str) -> str:
     return resp.choices[0].message.content.strip()
 
 def dalle_image_url(prompt: str, size="1024x1024") -> str:
-    if not USE_LLM:
+    if not USE_LLM or IS_OPENROUTER:
         return ""
     try:
         from openai import OpenAI
