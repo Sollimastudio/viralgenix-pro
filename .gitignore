@@ -2,5 +2,5 @@
 images/
 logos/
 __pycache__/
-.streamlit/
+.streamlit/secrets.toml
 venv/

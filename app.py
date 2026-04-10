@@ -17,10 +17,11 @@ IMAGES_DIR = BASE / "images"
 for d in (LOGOS_DIR, IMAGES_DIR):
     d.mkdir(exist_ok=True)
 
-PRODUCT_NAME = "ViralGenix PRO"
-BRAND_COLOR = "#1E90FF"
-GRAPHITE = "#0A1333"
-WHITE = "#FFFFFF"
+PRODUCT_NAME = "Sol Lima · Content Studio"
+BRAND_COLOR = "#C9A84C"
+GRAPHITE = "#0A0A0A"
+WHITE = "#F5F0E8"
+FOREST = "#1B3A2D"
 
 OPENAI_KEY = os.environ.get("VIRAL_API_KEY", "").strip()
 USE_LLM = bool(OPENAI_KEY)
@@ -343,7 +344,7 @@ def pro_css():
     st.markdown(f"""
     <style>
       .stApp {{
-        background: linear-gradient(180deg, {GRAPHITE} 0%, #0D1A4A 100%);
+        background: linear-gradient(180deg, {GRAPHITE} 0%, {FOREST} 100%);
         color: {WHITE};
       }}
       h1, h2, h3, h4, h5, h6 {{ color: {WHITE}; }}
@@ -354,20 +355,20 @@ def pro_css():
         border-radius: 10px;
         font-weight: 800;
         padding: 10px 16px;
-        box-shadow: 0 6px 14px rgba(30,144,255,0.25);
+        box-shadow: 0 6px 14px rgba(201,168,76,0.25);
         transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
       }}
       .stButton>button:hover {{
         transform: translateY(-1px);
-        box-shadow: 0 10px 20px rgba(30,144,255,0.35);
+        box-shadow: 0 10px 20px rgba(201,168,76,0.35);
         opacity: .95;
       }}
       .stTextInput>div>div>input,
       .stTextArea textarea,
       .stSelectbox div[data-baseweb="select"] {{
-        background: rgba(13, 26, 74, 0.55) !important;
+        background: rgba(27, 58, 45, 0.55) !important;
         color: {WHITE} !important;
-        border: 1px solid #1E2B5A !important;
+        border: 1px solid #2D5A3D !important;
         border-radius: 10px !important;
       }}
       .stTextInput>div>div>input::placeholder,
@@ -375,8 +376,8 @@ def pro_css():
         color: rgba(255,255,255,0.55) !important;
       }}
       .hero, .stTabs [data-baseweb="tab-list"] + div, .stFileUploader, .stDataFrame, .stAlert {{
-        background: rgba(13, 26, 74, 0.35) !important;
-        border: 1px solid #1E2B5A !important;
+        background: rgba(27, 58, 45, 0.35) !important;
+        border: 1px solid #2D5A3D !important;
         border-radius: 12px !important;
       }}
       .stTabs [data-baseweb="tab"] {{
@@ -390,13 +391,13 @@ def pro_css():
         font-size: 12px;
         font-weight: 800;
         margin-left: 8px;
-        box-shadow: 0 4px 12px rgba(30,144,255,0.35);
+        box-shadow: 0 4px 12px rgba(201,168,76,0.35);
       }}
       pre, code {{
-        background: #0F204F !important;
-        color: #E8F1FF !important;
+        background: #0F2A1A !important;
+        color: #F5F0E8 !important;
         border-radius: 10px !important;
-        border: 1px solid #1E2B5A !important;
+        border: 1px solid #2D5A3D !important;
       }}
       a {{ color: {BRAND_COLOR} !important; text-decoration: none !important; }}
       a:hover {{ text-decoration: underline !important; }}
@@ -405,13 +406,13 @@ def pro_css():
 
 def pro_header():
     st.title(f"{PRODUCT_NAME} <span class='badge'>PRO</span>", anchor=False)
-    st.markdown("Ferramentas profissionais para criacao multi-plataforma. Gere roteiros, carrosseis e artigos SEO com 1 clique.", unsafe_allow_html=True)
+    st.markdown("Crie conteúdo com sua voz, seu método e sua marca. Roteiros, carrosseis e artigos SEO com 1 clique.", unsafe_allow_html=True)
     if not USE_LLM:
         st.info("IA local ativa (sem chave). Para resultados melhores, defina VIRAL_API_KEY.")
 
 def main():
     ensure_schema()
-    st.set_page_config(page_title="ViralGenix PRO v2.3.1", page_icon="🔥", layout="wide")
+    st.set_page_config(page_title="Sol Lima · Content Studio", page_icon="🌿", layout="wide")
     pro_css(); pro_header()
 
     if "last_result" not in st.session_state:
@@ -550,7 +551,7 @@ def main():
                 intent = st.selectbox("Intencao de busca", ["Informacional","Transacional","Navegacional"], index=0)
                 length_words = st.slider("Tamanho (palavras)", 1000, 3000, 1600, step=100)
                 n_images = st.slider("Imagens (inclui Hero)", 1, 5, 3)
-                brand = st.text_input("Assinatura/Marca (E-E-A-T)", value="Sol Lima — ViralGenix")
+                brand = st.text_input("Assinatura/Marca (E-E-A-T)", value="Sol Lima")
                 want_images = st.toggle("Gerar imagens automaticamente", value=True)
 
                 if st.button("Gerar Artigo SEO ✅", use_container_width=True):
